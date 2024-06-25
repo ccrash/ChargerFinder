@@ -12,5 +12,5 @@ export interface Charger {
       ContactTelephone1: number | string | null,
       ContactTelephone2: number | string | null,
       ContactEmail: string | null
-    };
+    }
   }

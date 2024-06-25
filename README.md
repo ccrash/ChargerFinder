@@ -19,6 +19,7 @@ export const OpenChargeApiKey = "Insert your personal API Key here"
 * Extend the store (Redux in this case) to manage different users/cars and save the app's state
 * Cache retrived data and history to be available also offline
 * Implement tests to ensure every component is working correctly
+* Implement endpoint tests to ensure endpoints are working correctly
 * Replace every string with an i18n alias to support different languages
 * Improve the layout and define classes/alias to keep the design persistent and semplify themes management
 * Add alias definitions to semplify the paths in import
@@ -26,4 +27,5 @@ export const OpenChargeApiKey = "Insert your personal API Key here"
 * Following the Atomic design guidelines, I would redefine also the basic component to automate default functionalities and semplify library update/dismission
 * More robust error handling should be added to handle various edge cases
 * Implement authentication for the backend API
-* Encode the key file so that it's not readable decompiling the final app
+* Encode the key file so that it's not readable decompiling the final app (possibly move the key on the backend)
+*
