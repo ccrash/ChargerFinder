@@ -11,7 +11,23 @@ export const styles = StyleSheet.create({
     map: {
       width: Dimensions.get('window').width,
       height: Dimensions.get('window').height,
-    }
+    },
+    mapButton: {
+      backgroundColor: 'black',
+      width: 'auto',
+      borderRadius: 20,
+      padding: 20,
+      position: 'absolute',
+      bottom: 50,
+      flexDirection: 'row',
+      justifyContent: 'center',
+    },
+    mapButtonText: {
+      color: 'white',
+      textAlign: 'center',
+      fontWeight: 'bold',
+      fontSize: 16
+    },
   })
 
   export default styles

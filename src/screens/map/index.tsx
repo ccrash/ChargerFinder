@@ -1,27 +1,27 @@
-import React, { FC, useState, useEffect } from 'react'
-import { View, Text, ActivityIndicator } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, Text, Modal, ActivityIndicator } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 import * as Location from 'expo-location'
 
 import { fetchChargers } from '../../helpers/api'
 import { Charger } from '../../def/charger'
 
+import MapChargerDetails from '../../components/mapChargerDetails'
+
 import styles from './style'
 
-interface _props {
-    navigation: any
-  }
-
-export const MapScreen: FC<_props> = ({ navigation }) => {
+export const MapScreen = ({ navigation }: { navigation: any }) => {
   const [chargers, setChargers] = useState<Charger[]>([])
+  const [selectedCharger, setSelectedCharger] = useState<Charger | null>(null)
   const [location, setLocation] = useState<Location.LocationObject | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const [modalVisible, setModalVisible] = useState<boolean>(false)
   const [region, setRegion] = useState<any>({
     latitude: 0.0,
     longitude: 0.0,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
+    latitudeDelta: 0.04,
+    longitudeDelta: 0.04
   })
 
   useEffect(() => {
@@ -52,8 +52,22 @@ export const MapScreen: FC<_props> = ({ navigation }) => {
     })()
   }, [])
 
+  const handleMarkerPress = (charger: Charger) => {
+    setSelectedCharger(charger)
+    setModalVisible(true)
+  }
+
   const handleRegionChangeComplete = (region: any) => {
     setRegion(region)
+  }
+
+  const onDetailsSelect = (charger: Charger) => {
+    setModalVisible(false)
+    navigation.navigate('Home')
+  }
+
+  const onDetailsClose = () => {
+    setModalVisible(false)
   }
 
   const renderMarkers = () => {
@@ -65,9 +79,16 @@ export const MapScreen: FC<_props> = ({ navigation }) => {
           longitude: charger.AddressInfo.Longitude,
         }}
         title={charger.AddressInfo.Title}
+        onPress={() => handleMarkerPress(charger)}
       />
     ))
   }
+
+  const renderMarkerDetails = () => (
+    <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
+      <MapChargerDetails charger={selectedCharger} onContinue={onDetailsSelect} onClose={onDetailsClose} />
+    </Modal>
+  )
 
   const renderLoading = () => (
     <View style={styles.container}>
@@ -97,9 +118,20 @@ export const MapScreen: FC<_props> = ({ navigation }) => {
           initialRegion={region}
           onRegionChangeComplete={handleRegionChangeComplete}
         >
+            {/*  Render your position */}
+            <Marker
+                key={'you'}
+                coordinate={{
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                }}
+                title={"Your position"}
+                pinColor={'green'}
+            />
           { renderMarkers() }
         </MapView>
       )}
+      {selectedCharger && renderMarkerDetails()}
     </View>
   )
 }
