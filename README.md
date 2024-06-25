@@ -4,8 +4,8 @@
 # Setup a local development environment
 
 * Clone the repository in you favorite folder.
-* If you don't have an Open Charger API key, register an account and create a new one at https://openchargemap.org/
-* Edit the file in (src/settings/keys.ts) to contain your Open Charger API key
+* If you don't have an Open Charge API key, register an account and create a new one at https://openchargemap.org/
+* Edit the file in `src/settings/keys.ts` to contain your Open Charge API key
 
 ```js
 export const OpenChargeApiKey = "Insert your personal API Key here"
@@ -15,10 +15,15 @@ export const OpenChargeApiKey = "Insert your personal API Key here"
 * Run `yarn install` to install all the dependencies
 * Run `npx expo start ` to run the application
 
-# IF i had more time I would
-* Integrate a state management (Redux, etc.) to manage the internal data and save the app's state
+# If i had more time I would
+* Extend the store (Redux in this case) to manage different users/cars and save the app's state
 * Cache retrived data and history to be available also offline
 * Implement tests to ensure every component is working correctly
-* Improve the layout and define classes/alias to keep the design persistent
+* Replace every string with an i18n alias to support different languages
+* Improve the layout and define classes/alias to keep the design persistent and semplify themes management
+* Add alias definitions to semplify the paths in import
 * Add safe-area-view to prevent undesired interactions
-* Encode the key file so that it's not readable decompiling the final app 
+* Following the Atomic design guidelines, I would redefine also the basic component to automate default functionalities and semplify library update/dismission
+* More robust error handling should be added to handle various edge cases
+* Implement authentication for the backend API
+* Encode the key file so that it's not readable decompiling the final app

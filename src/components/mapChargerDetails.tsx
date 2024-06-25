@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
 
 import { Charger } from '../def/charger'
@@ -13,26 +13,24 @@ interface _props {
 
 export const MapChargerDetails = ({charger, onContinue, onClose} : _props) => {
 
-    if(!charger) {
-        return null
-    }
-    return (
-        <View style={styles.container}>
-            <Text>{charger.AddressInfo.Title}</Text>
-            <Text>{charger.AddressInfo.AddressLine1}</Text>
-            <Text>{charger.AddressInfo.Town}</Text>
-            <Text>{charger.AddressInfo.StateOrProvince}</Text>
-            <Text>{charger.AddressInfo.Postcode}</Text>
-            <View style={styles.buttons}>
-                <TouchableOpacity style={styles.button} onPress={() => onContinue(charger)}>
-                    <Text style={styles.buttonText}>Select</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={onClose}>
-                    <Text style={styles.buttonText}>Close</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
-    )
+  return charger && (
+    
+    <View style={styles.container}>
+      <Text style={styles.title}>{charger.AddressInfo.Title}</Text>
+      { charger.AddressInfo.AddressLine1 && <Text style={styles.address}>{charger.AddressInfo.AddressLine1}</Text> }
+      { charger.AddressInfo.Town && <Text style={styles.address}>{charger.AddressInfo.Town}</Text> }
+      { charger.AddressInfo.StateOrProvince && <Text>{charger.AddressInfo.StateOrProvince}</Text> }
+      <Text style={styles.postcode}>{charger.AddressInfo.Postcode}</Text>
+      <View style={styles.buttons}>
+        <TouchableOpacity style={styles.buttonSelect} onPress={() => onContinue(charger)}>
+          <Text style={styles.buttonSelectText}>Select</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonClose} onPress={onClose}>
+          <Text style={styles.buttonCloseText}>Close</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  )
 }
 
 export default MapChargerDetails

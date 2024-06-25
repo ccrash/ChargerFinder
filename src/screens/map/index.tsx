@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, Modal, ActivityIndicator } from 'react-native'
+import { View, Text, Modal, ActivityIndicator, Alert, TouchableOpacity } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 import * as Location from 'expo-location'
+import { useDispatch } from 'react-redux'
 
+import { selectCharger } from '../../store/chargerSlice'
 import { fetchChargers } from '../../helpers/api'
 import { Charger } from '../../def/charger'
 
@@ -11,6 +13,7 @@ import MapChargerDetails from '../../components/mapChargerDetails'
 import styles from './style'
 
 export const MapScreen = ({ navigation }: { navigation: any }) => {
+  const dispatch = useDispatch()
   const [chargers, setChargers] = useState<Charger[]>([])
   const [selectedCharger, setSelectedCharger] = useState<Charger | null>(null)
   const [location, setLocation] = useState<Location.LocationObject | null>(null)
@@ -21,7 +24,7 @@ export const MapScreen = ({ navigation }: { navigation: any }) => {
     latitude: 0.0,
     longitude: 0.0,
     latitudeDelta: 0.04,
-    longitudeDelta: 0.04
+    longitudeDelta: 0.04,
   })
 
   useEffect(() => {
@@ -61,13 +64,37 @@ export const MapScreen = ({ navigation }: { navigation: any }) => {
     setRegion(region)
   }
 
+  const refreshChargers = async () => {
+    try {
+      const chargers = await fetchChargers(region.latitude, region.longitude)
+      setChargers(chargers)
+    } catch (error) {
+      Alert.alert('Error', 'Failed to refresh chargers')
+    } 
+  }
+
   const onDetailsSelect = (charger: Charger) => {
+    dispatch(selectCharger(charger))
     setModalVisible(false)
     navigation.navigate('Home')
   }
 
   const onDetailsClose = () => {
     setModalVisible(false)
+  }
+
+  const renderYourMarker = () => {
+    if(!location) {
+        return null
+    }
+
+    return (
+        <Marker key={'you'}
+            coordinate={{ latitude: location.coords.latitude, longitude: location.coords.longitude, }}
+            title={"Your position"}
+            pinColor={'green'}
+        />
+    )
   }
 
   const renderMarkers = () => {
@@ -92,7 +119,7 @@ export const MapScreen = ({ navigation }: { navigation: any }) => {
 
   const renderLoading = () => (
     <View style={styles.container}>
-      <ActivityIndicator size="large" color="#0000ff" />
+      <ActivityIndicator size="large" color="#000000" />
     </View>
   )
 
@@ -118,20 +145,14 @@ export const MapScreen = ({ navigation }: { navigation: any }) => {
           initialRegion={region}
           onRegionChangeComplete={handleRegionChangeComplete}
         >
-            {/*  Render your position */}
-            <Marker
-                key={'you'}
-                coordinate={{
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-                }}
-                title={"Your position"}
-                pinColor={'green'}
-            />
-          { renderMarkers() }
+            { renderYourMarker() }
+            { renderMarkers() }
         </MapView>
       )}
       {selectedCharger && renderMarkerDetails()}
+      <TouchableOpacity style={styles.mapButton} onPress={refreshChargers}>
+        <Text style={styles.mapButtonText}>Refresh</Text>
+      </TouchableOpacity>
     </View>
   )
 }
